@@ -242,6 +242,18 @@ schema.extendType({
         //if has not liked 
         if(userAlreadyLiked.length > 0){
           //unlike the post 
+          console.log(postId)
+          const unlikeThePost = await ctx.db.like.deleteMany({
+            where: {
+              postId: postId,
+              userId: userId
+            }
+          })
+
+          return {
+            like: unlikeThePost
+          }
+
         }
         //console.log(args.input.postId)
         //like the post
