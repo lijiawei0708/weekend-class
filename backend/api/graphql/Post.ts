@@ -243,9 +243,36 @@ schema.extendType({
         if(userAlreadyLiked.length > 0){
           //unlike the post 
         }
-
+        //console.log(args.input.postId)
         //like the post
-        
+        const likeThePost = await ctx.db.like.create({
+          data: {
+            user: {
+              connect: {
+                id: userId
+              }
+            },
+            post: {
+              connect: {
+                id: postId
+              }
+            }
+          }
+        })
+
+        //update post.like + 1 
+        const likeNumberPlus = await ctx.db.post.update({
+          where: {
+            id: postId
+          },
+          data: {
+            //like: 
+          }
+        })
+
+        return {
+          like: likeThePost,
+        }
       }
     })
   }
