@@ -21,6 +21,7 @@ schema.objectType({
   definition: t => {
     t.string('token')
     t.field('user', { type: 'User' })
+    t.field('like', { type: 'Like' })
   }
 })
 
@@ -54,10 +55,13 @@ schema.extendType({
           }
         })
 
+        const like = await ctx.db.like.findMany()
+
         const token = sign({ userId: user.id }, APP_SECRET)
         return {
           token,
           user,
+          like
         }
       }
     })
@@ -83,6 +87,9 @@ schema.extendType({
       // @ts-ignore
       resolve: async (_root, { input: { email, password }}, ctx) => {
         const user = await ctx.db.user.findOne({ where: { email }})
+
+        const like = await ctx.db.like.findMany()
+        console.log(like)
         if (!user) throw new Error(`No user found for email: ${email}`)
 
         const isPasswordValid = await compare(password, user.password)
@@ -92,6 +99,7 @@ schema.extendType({
         return {
           token,
           user,
+          like
         }
       }
     })

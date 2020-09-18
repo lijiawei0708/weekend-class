@@ -192,11 +192,11 @@ schema.extendType({
   }
 })
 
-// LIKE AND UNLIKE POST MUTATION
+// LIKE POST MUTATION
 
 //identify the input of this mutation
 schema.inputObjectType({
-  name: 'LikeAndUnlikePostInput',
+  name: 'LikePostInput',
   definition: t => {
     t.id('postId', {required: true})
   }
@@ -204,22 +204,22 @@ schema.inputObjectType({
 
 //this is for identify mutation field
 schema.objectType({
-  name: 'LikeAndUnlikePostPayload',
+  name: 'LikePostPayload',
   definition: t => {
-    t.field('post', { type: 'Post' })
+    t.field('post', { type: 'Post' }),
     t.field('like', { type: 'Like' })
   }
 })
 
-// like and unlike mutation
+// like mutation
 schema.extendType({
   type: 'Mutation',
   definition: t => {
-    t.field('likeAndUnlikePost', {
-      type: 'LikeAndUnlikePostPayload', 
+    t.field('likePost', {
+      type: 'LikePostPayload', 
       args: {
         input: schema.arg({
-          type: 'LikeAndUnlikePostInput',
+          type: 'LikePostInput',
           required: true,
         })
       },
@@ -239,23 +239,10 @@ schema.extendType({
           }
         })
 
-        //if has not liked 
+        //if has liked 
         if(userAlreadyLiked.length > 0){
-          //unlike the post 
-          console.log(postId)
-          const unlikeThePost = await ctx.db.like.deleteMany({
-            where: {
-              postId: postId,
-              userId: userId
-            }
-          })
-
-          return {
-            like: unlikeThePost
-          }
-
+          throw new Error('you have already liked this post') 
         }
-        //console.log(args.input.postId)
         //like the post
         const likeThePost = await ctx.db.like.create({
           data: {
@@ -272,19 +259,108 @@ schema.extendType({
           }
         })
 
+        const findNumberOfLikedPost = await ctx.db.like.count({
+          where: {
+            postId: args.input.postId,
+            userId: userId
+          }
+        })
+
+        //console.log(findNumberOfLikedPost)
+
         //update post.like + 1 
         const likeNumberPlus = await ctx.db.post.update({
           where: {
             id: postId
           },
           data: {
-            //like: 
+            like: findNumberOfLikedPost + 1
+          }
+        })
+
+        const findPost = await ctx.db.post.findOne({
+          where: {
+            id: postId
           }
         })
 
         return {
           like: likeThePost,
+          post: findPost
         }
+      }
+    })
+  }
+})
+
+
+//unlike the post mutation
+
+schema.inputObjectType({
+  name: 'UnlikePostInput',
+  definition: t => {
+    t.id('postId', {required: true})
+  }
+})
+schema.objectType({
+  name: 'UnlikePostPayload',
+  definition: t => {
+    t.field('like', { type: 'Like'})
+  }
+})
+
+schema.extendType({
+  type: 'Mutation',
+  definition: t => {
+    t.field('unlikePost', {
+      type: 'UnlikePostPayload',
+      args: {
+        input: schema.arg({
+          type: 'UnlikePostInput',
+          required: true,
+        })
+      },
+      resolve: async(_root, args, ctx) => {
+
+        const {id: postId} = fromGlobalId(args.input.postId)
+        //check if the user is authorized 
+        const userId = ctx.getUserId()
+        if(!userId) throw new Error('Unauthorized')
+
+        //check have already liked
+        const postLiked = await ctx.db.like.findMany({
+          where: {
+            postId,
+            userId
+          }
+        })
+
+        if(postLiked.length ===0){
+          throw new Error ('there is no like')
+        }
+
+        const deleteLike = await ctx.db.like.deleteMany({
+          where: {
+            userId: userId,
+            postId: postId
+          }
+        })
+
+        const likeNum = await ctx.db.post.findOne({
+          where: {
+            id: postId
+          }
+        })
+
+        // const updatePostLikeNum = await ctx.db.post.update({
+        //   where: {
+        //     id: args.input.postId
+        //   },
+        //   data: {
+        //     like = likeNum?.like - 1
+        //   }
+        // })
+
       }
     })
   }

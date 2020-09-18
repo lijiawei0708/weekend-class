@@ -3,6 +3,7 @@
 
 
 type AuthPayload {
+  like: Like
   token: String
   user: User
 }
@@ -44,11 +45,11 @@ type Like implements Node {
   userId: String!
 }
 
-input LikeAndUnlikePostInput {
+input LikePostInput {
   postId: ID!
 }
 
-type LikeAndUnlikePostPayload {
+type LikePostPayload {
   like: Like
   post: Post
 }
@@ -61,9 +62,10 @@ input LoginInput {
 type Mutation {
   createPost(input: CreatePostInput!): CreatePostPayload
   deletePost(input: DeletePostInput!): DeletePostPayload
-  likeAndUnlikePost(input: LikeAndUnlikePostInput!): LikeAndUnlikePostPayload
+  likePost(input: LikePostInput!): LikePostPayload
   login(input: LoginInput!): AuthPayload
   signup(input: SignupInput!): AuthPayload
+  unlikePost(input: UnlikePostInput!): UnlikePostPayload
 }
 
 interface Node {
@@ -154,6 +156,14 @@ input SignupInput {
   email: String!
   name: String!
   password: String!
+}
+
+input UnlikePostInput {
+  postId: ID!
+}
+
+type UnlikePostPayload {
+  like: Like
 }
 
 type User implements Node {
