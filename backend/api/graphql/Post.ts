@@ -318,7 +318,7 @@ schema.extendType({
         })
 
         return{
-          like: deleteLike
+          like: postLiked
         }
       }
     })

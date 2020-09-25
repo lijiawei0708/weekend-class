@@ -8,6 +8,47 @@ type AuthPayload {
   user: User
 }
 
+type Comment implements Node {
+  author: User!
+  content: String!
+  createdAt: DateTime!
+
+  """Relay ID"""
+  id: ID!
+  post: Post!
+  postId: String!
+  userId: String!
+}
+
+type CommentConnection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [CommentEdge]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+}
+
+type CommentEdge {
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor"""
+  cursor: String!
+
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
+  node: Comment
+}
+
+input CreateCommentInput {
+  content: String!
+  postId: ID!
+}
+
+type CreateCommentPayload {
+  comment: Comment
+}
+
 input CreatePostInput {
   content: String!
 }
@@ -61,6 +102,7 @@ input LoginInput {
 }
 
 type Mutation {
+  createComment(input: CreateCommentInput!): CreateCommentPayload
   createPost(input: CreatePostInput!): CreatePostPayload
   deletePost(input: DeletePostInput!): DeletePostPayload
   likePost(input: LikePostInput!): LikePostPayload
@@ -101,6 +143,19 @@ type PageInfo {
 
 type Post implements Node {
   author: User!
+  comments(
+    """Returns the elements in the list that come after the specified cursor"""
+    after: String
+
+    """Returns the elements in the list that come before the specified cursor"""
+    before: String
+
+    """Returns the first n elements from the list."""
+    first: Int
+
+    """Returns the last n elements from the list."""
+    last: Int
+  ): CommentConnection
   content: String!
   createdAt: DateTime!
 
