@@ -8,7 +8,7 @@ schema.objectType({
     t.implements('Node')
     // t.model.id()
     t.model.content()
-    t.model.like()
+    t.model.likes()
     t.model.author()
     t.model.createdAt()
   }
@@ -26,6 +26,13 @@ schema.extendType({
         const connection = connectionFromArray(postsByUser, args)
 
         return connection
+      },
+      extendConnection: t => {
+        t.int('totalCount', {
+          resolve: (postConnection, _args, _ctx) => {
+            return 10
+          }
+        })
       }
     })
   }
@@ -206,7 +213,6 @@ schema.inputObjectType({
 schema.objectType({
   name: 'LikePostPayload',
   definition: t => {
-    t.field('post', { type: 'Post' }),
     t.field('like', { type: 'Like' })
   }
 })
@@ -243,56 +249,21 @@ schema.extendType({
         if(userAlreadyLiked.length > 0){
           throw new Error('you have already liked this post') 
         }
-        //like the post
-        const likeThePost = await ctx.db.like.create({
+
+        const like = ctx.db.like.create({
           data: {
-            user: {
-              connect: {
-                id: userId
-              }
-            },
-            post: {
-              connect: {
-                id: postId
-              }
-            }
-          }
-        })
-
-        const findNumberOfLikedPost = await ctx.db.like.count({
-          where: {
-            postId: args.input.postId,
-            userId: userId
-          }
-        })
-
-        //console.log(findNumberOfLikedPost)
-
-        //update post.like + 1 
-        const likeNumberPlus = await ctx.db.post.update({
-          where: {
-            id: postId
-          },
-          data: {
-            like: findNumberOfLikedPost + 1
-          }
-        })
-
-        const findPost = await ctx.db.post.findOne({
-          where: {
-            id: postId
+            user: { connect: { id: userId }},
+            post: { connect: { id: postId }},
           }
         })
 
         return {
-          like: likeThePost,
-          post: findPost
+          like
         }
       }
     })
   }
 })
-
 
 //unlike the post mutation
 
@@ -335,32 +306,20 @@ schema.extendType({
           }
         })
 
-        if(postLiked.length ===0){
+        if(postLiked.length === 0){
           throw new Error ('there is no like')
         }
 
         const deleteLike = await ctx.db.like.deleteMany({
           where: {
-            userId: userId,
-            postId: postId
+            postId: postId,
+            userId: userId
           }
         })
 
-        const likeNum = await ctx.db.post.findOne({
-          where: {
-            id: postId
-          }
-        })
-
-        // const updatePostLikeNum = await ctx.db.post.update({
-        //   where: {
-        //     id: args.input.postId
-        //   },
-        //   data: {
-        //     like = likeNum?.like - 1
-        //   }
-        // })
-
+        return{
+          like: deleteLike
+        }
       }
     })
   }

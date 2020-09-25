@@ -18,7 +18,7 @@
         "dev": "nexus dev",
         "build": "nexus build",
         "start": "node .nexus/build/api",
-        "test": "jest",
+        "test": "dotenv -e .env -- jest",
         "migrate:save": "dotenv -e .env -- prisma migrate save --experimental",
         "migrate:up": "dotenv -e .env -- prisma migrate up --experimental",
         "seed": "ts-node prisma/seed"

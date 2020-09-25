@@ -40,9 +40,7 @@ type Like implements Node {
   """Relay ID"""
   id: ID!
   post: Post!
-  postId: String!
   user: User!
-  userId: String!
 }
 
 input LikePostInput {
@@ -51,7 +49,10 @@ input LikePostInput {
 
 type LikePostPayload {
   like: Like
-  post: Post
+}
+
+input LikeWhereUniqueInput {
+  id: String
 }
 
 input LoginInput {
@@ -105,7 +106,7 @@ type Post implements Node {
 
   """Relay ID"""
   id: ID!
-  like: Int!
+  likes(after: LikeWhereUniqueInput, before: LikeWhereUniqueInput, first: Int, last: Int): [Like!]!
 }
 
 type PostConnection {
@@ -185,5 +186,18 @@ type User implements Node {
 
     """Returns the last n elements from the list."""
     last: Int
-  ): PostConnection
+  ): UserPosts_Connection
+}
+
+type UserPosts_Connection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [PostEdge]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+  totalCount: Int
 }
