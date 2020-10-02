@@ -3575,6 +3575,31 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-relay@^7.0.11":
+  version "7.0.11"
+  resolved "https://registry.yarnpkg.com/@types/react-relay/-/react-relay-7.0.11.tgz#25f149589870b238b34e8c68c14a8daf3d5ee01a"
+  integrity sha512-SHLYr+GLU2Wm6Ck6pk0VpqllnE3Gf6MkdcdOveuYdQETTB7S47fUGIzHhIyTOp3fts+O0Cgkeeq2kxWGYJYQBw==
+  dependencies:
+    "@types/react" "*"
+    "@types/relay-runtime" "*"
+
+"@types/react-router-dom@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.5.tgz#7c334a2ea785dbad2b2dcdd83d2cf3d9973da090"
+  integrity sha512-ArBM4B1g3BWLGbaGvwBGO75GNFbLDUthrDojV2vHLih/Tq8M+tgvY1DSwkuNrPSwdp/GUL93WSEpTZs8nVyJLw==
+  dependencies:
+    "@types/history" "*"
+    "@types/react" "*"
+    "@types/react-router" "*"
+
+"@types/react-router@*":
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-5.1.8.tgz#4614e5ba7559657438e17766bb95ef6ed6acc3fa"
+  integrity sha512-HzOyJb+wFmyEhyfp4D4NYrumi+LQgQL/68HvJO+q6XtuHSDvw6Aqov7sCAhjbNq3bUPgPqbdvjXC5HeB2oEAPg==
+  dependencies:
+    "@types/history" "*"
+    "@types/react" "*"
+
 "@types/react-syntax-highlighter@11.0.4":
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-11.0.4.tgz#d86d17697db62f98046874f62fdb3e53a0bbc4cd"
@@ -3603,6 +3628,11 @@
   integrity sha512-d2gQQ0IL6hXLnoRfVYZukQNWHuVsE75DzFTLPUuyyEhJS8G2VvlE+qfQQ91SJjaMqlURRCNIsX7Jcsw6cEuJlA==
   dependencies:
     "@types/react" "*"
+
+"@types/relay-runtime@*":
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/@types/relay-runtime/-/relay-runtime-10.0.4.tgz#b3b70eb07b5c851fc5d7feffa5fc79cbda79831f"
+  integrity sha512-PqmnynswPz5STanyPI6rjfW2ZdLju9scm5DQWFRJXC/WtKJNggyBMDQlMbTp5Sq1/5nIcP6Z7DK+Mrod9wNo9g==
 
 "@types/source-list-map@*":
   version "0.1.2"

@@ -8,11 +8,12 @@ export type TextFieldInputProps =
     validateRules: ValidationRules
   }
 
-const TextFieldInput: React.FC<TextFieldInputProps> = ({ validateRules, ...props }) => {
+const TextFieldInput: React.FC<TextFieldInputProps> = ({ validateRules, variant, ...props }) => {
   const { register } = useFormContext()
 
   return (
     <TextField
+      variant={variant as any}
       {...props}
       inputRef={register(validateRules)}
     />
